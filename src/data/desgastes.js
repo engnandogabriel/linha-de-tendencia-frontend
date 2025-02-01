@@ -1,7 +1,8 @@
 const desgastes = [
     "Bitola Ponta Agulha - dorm n° 20-002",
     "Bitola Ponta Agulha - dorm n° 20-010",
-    "Desg. Lateral TR enc. reto", "Desg. Vertical TR enc. reto",
+    "Desg. Lateral TR enc. reto",
+    "Desg. Vertical TR enc. reto",
     "Desg. Lateral TR enc. curvo",
     "Desg. Vertical TR enc. curvo",
     "Desgaste ponta primária/secundária Jacaré"

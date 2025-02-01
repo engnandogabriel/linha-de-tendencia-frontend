@@ -32,7 +32,7 @@ const Desgastes = () => {
       {data && (
       <div style={{ marginTop:"32px", display: "flex", flexWrap: "wrap", width: "50%", margin: "0 auto" }}>
         <Title text={`Linha de Tendência - ${tu}`}/>
-      <DeteriorationChart data={data} />
+        <DeteriorationChart data={data} domainX={data.domainX} domainY={data.domainY}/>
     </div>
       )}
     </>

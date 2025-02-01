@@ -2,13 +2,13 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Dot } from 'recharts';
 import { classificationColor } from '../../data/desgastes';
 import LegendComponent from '../LegendComponent/index'
-const DeteriorationChart = ({ data }) => {
+const DeteriorationChart = ({ data, domainX, domainY }) => {
     const dataChart = data.deteriorations.map((deterioration) => ({
     date: deterioration.date,
     value: deterioration.value,
     classification: deterioration.classification,
     }));
-    console.log(dataChart)
+    console.log(data)
       const lastDeterioraition = dataChart.slice(-3);
   return (
     <>
@@ -20,7 +20,7 @@ const DeteriorationChart = ({ data }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis domain={[1500, 1700]} />
+      <YAxis domain={[domainX, domainY]} />
       <Tooltip
         content={({ payload }) => {
           if (payload && payload.length > 0) {
