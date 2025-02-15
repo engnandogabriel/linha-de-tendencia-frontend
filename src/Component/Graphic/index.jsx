@@ -34,7 +34,7 @@ const DeteriorationChart = ({
   }));
 
   const handleChartClick = (e) => {
-    const { activeLabel, activePayload } = e;
+    const { activePayload } = e;
     if (activePayload && activePayload.length > 0) {
       const clickedData = activePayload[0].payload;
       setClickedPoint(clickedData);
@@ -93,7 +93,13 @@ const DeteriorationChart = ({
                 ) : (
                   classificationColor.map((e, idx) =>
                     e.classification === payload.classification ? (
-                      <Dot key={idx} cx={cx} cy={cy} r={5} fill={e.color} />
+                      <Dot
+                        key={`dot-${payload.classification}-${idx}`}
+                        cx={cx}
+                        cy={cy}
+                        r={5}
+                        fill={e.color}
+                      />
                     ) : null
                   )
                 )}

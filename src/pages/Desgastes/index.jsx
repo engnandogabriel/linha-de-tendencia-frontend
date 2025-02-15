@@ -62,6 +62,7 @@ const Desgastes = () => {
                 <LegendComponent />;
                 return (
                   <DeteriorationChart
+                    key={data.deteriorationName}
                     title={data.deteriorationName}
                     data={data}
                     domainX={data.domainX}
