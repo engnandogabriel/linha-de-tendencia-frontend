@@ -1,39 +1,78 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { DeteriorationGlobalContext } from "../../Context/Context";
 import Header from "../../Component/Header";
 import DeteriorationChart from "../../Component/Graphic";
 import Title from "../../Component/Title/index";
+import LegendComponent from "../../Component/LegendComponent";
+import { desgastes } from "../../data/desgastes";
+import Loading from "../../Component/Loading";
+import ModalError from "../../Component/ModalError";
 
 const Desgastes = () => {
   const [tu, setTu] = useState(null);
-  const [desgaste, setDesgaste] = useState(null);
-  const [data, setData] = useState(null); 
   const contexDeterioration = useContext(DeteriorationGlobalContext);
-
-  useEffect(() => {
-    if (tu != null && desgaste != null) {
-      fetchData(); 
-    }
-  }, [tu, desgaste]);
+  const [load, setLoad] = useState(false);
+  const [showModalErro, setShowModalErro] = useState(false);
 
   async function fetchData() {
-      await contexDeterioration.getDeteriorations(tu, desgaste); 
-      setData(contexDeterioration.list); 
+    if (tu) {
+      contexDeterioration.setList([]);
+      setLoad(true);
+      for (const deterioration of desgastes) {
+        await contexDeterioration.getDeteriorations(tu, deterioration);
+      }
+      setLoad(false);
+    } else {
+      setShowModalErro(true);
+      setTimeout(() => {
+        setShowModalErro(false);
+      }, 2000);
+    }
   }
+  if (load) return <Loading />;
 
   return (
     <>
-      <Header desgaste={desgaste} setDesgaste={setDesgaste} tu={tu} setTu={setTu} fetchData={fetchData} />
-      {data == null && 
-        <div>
-          <Title text="Selecione os dados"/>
-        </div>
-      }
-      {data && (
-      <div style={{ marginTop:"32px", display: "flex", flexWrap: "wrap", width: "50%", margin: "0 auto" }}>
-        <Title text={`Linha de Tendência - ${tu}`}/>
-        <DeteriorationChart data={data} domainX={data.domainX} domainY={data.domainY}/>
-    </div>
+      <Header tu={tu} setTu={setTu} fetchData={fetchData} />
+      {tu && <Title text={`Linha de Tendência ${tu}`} />}
+      {showModalErro && (
+        <ModalError
+          showModal={showModalErro}
+          setShowModal={setShowModalErro}
+          message={"SELECIONE UM TU!"}
+        />
+      )}
+      {contexDeterioration.list == null && <h2>Sem dados</h2>}
+      {contexDeterioration.list && contexDeterioration.list.length > 0 && (
+        <LegendComponent />
+      )}
+      {contexDeterioration.list && (
+        <>
+          <div
+            style={{
+              marginTop: "32px",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "16px",
+              width: "50%",
+            }}
+          >
+            {contexDeterioration.list &&
+              contexDeterioration.list.map((data) => {
+                <LegendComponent />;
+                return (
+                  <DeteriorationChart
+                    title={data.deteriorationName}
+                    data={data}
+                    domainX={data.domainX}
+                    domainY={data.domainY}
+                    referenceLineMin={data.referenceLineMin}
+                    referenceLineMax={data.referenceLineMax}
+                  />
+                );
+              })}
+          </div>
+        </>
       )}
     </>
   );

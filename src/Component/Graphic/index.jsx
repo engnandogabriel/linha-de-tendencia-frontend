@@ -1,65 +1,116 @@
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Dot } from 'recharts';
-import { classificationColor } from '../../data/desgastes';
-import LegendComponent from '../LegendComponent/index'
-const DeteriorationChart = ({ data, domainX, domainY }) => {
-    const dataChart = data.deteriorations.map((deterioration) => ({
-    date: deterioration.date,
-    value: deterioration.value,
+import React, { useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Dot,
+  ReferenceLine,
+} from "recharts";
+import { classificationColor } from "../../data/desgastes";
+import DateFormat from "../DateFormat";
+import InfoModal from "../InfoModal";
+
+const DeteriorationChart = ({
+  title,
+  data,
+  domainX,
+  domainY,
+  referenceLineMin,
+  referenceLineMax,
+}) => {
+  const [clickedPoint, setClickedPoint] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const dataChart = data.deteriorations.map((deterioration) => ({
+    deteriorationId: deterioration.deteriorationId,
+    startedIn: deterioration.startedIn,
+    finishedIn: deterioration.finishedIn,
+    valor: deterioration.value,
     classification: deterioration.classification,
-    }));
-    console.log(data)
-      const lastDeterioraition = dataChart.slice(-3);
+  }));
+
+  const handleChartClick = (e) => {
+    const { activeLabel, activePayload } = e;
+    if (activePayload && activePayload.length > 0) {
+      const clickedData = activePayload[0].payload;
+      setClickedPoint(clickedData);
+      setShowModal(true);
+    }
+  };
+  const handleCloseModal = () => setShowModal(false);
   return (
-    <>
-    <LineChart
-      width={800}
-      height={400}
-      data={dataChart}
-      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" />
-      <YAxis domain={[domainX, domainY]} />
-      <Tooltip
-        content={({ payload }) => {
-          if (payload && payload.length > 0) {
-            const { classification, value, date } = payload[0].payload;
+    <div>
+      <h4>{title}</h4>
+      <LineChart
+        width={700}
+        height={300}
+        data={dataChart}
+        onClick={handleChartClick} // Adiciona o evento de clique
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis domain={[domainX, domainY]} />
+        <Tooltip
+          content={({ payload }) => {
+            if (payload && payload.length > 0) {
+              const { classification, valor, startedIn, finishedIn } =
+                payload[0].payload;
               return (
-              <div>
-                <p>{`Data: ${date}`}</p>
-                <p>{`Valor: ${value}`}</p>
-                <p>{`Classificação: ${classification}`}</p>
-              </div>
-            );
-          }
-          return null;
-        }}
-      />
-      <Legend dx="XXXXXXXX"/>
-      <Line
-        type="monotone"
-        dataKey="value"
-        // stroke="#8884d8"
-        stroke='#000'
-        dot={({ cx, cy, payload }) => (
-          <g>            
-            {classificationColor.map((e, index) => {
-              if(payload.date === lastDeterioraition.date){
-                return <Dot cx={cx} cy={cy} r={5} fill="black" />
-              }
-              if(e.classification === payload.classification){
-                return <Dot cx={cx} cy={cy} r={5} fill={e.color} />
-              }
-              return null;
-            })}
-          </g>
+                <div>
+                  <DateFormat message="Início da Manutenção" date={startedIn} />
+                  <DateFormat message="Fim da Manutenção" date={finishedIn} />
+                  <p>{`Valor do Desgaste: ${valor}`}</p>
+                  <p>{`Classificação: ${classification}`}</p>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
+        <Legend dx="XXXXXXXX" />
+        {referenceLineMax && (
+          <ReferenceLine y={referenceLineMax} stroke="black" strokeWidth={1} />
         )}
-        connectNulls
+
+        {referenceLineMin && (
+          <ReferenceLine y={referenceLineMin} stroke="black" strokeWidth={1} />
+        )}
+        <Line
+          type="monotone"
+          dataKey="valor"
+          stroke="#000"
+          dot={({ cx, cy, payload, index }) => {
+            const totalPoints = dataChart.length;
+            const isLastFour = index >= totalPoints - 4;
+            return (
+              <g>
+                {isLastFour ? (
+                  <Dot cx={cx} cy={cy} r={5} fill="#000" strokeWidth={2} />
+                ) : (
+                  classificationColor.map((e, idx) =>
+                    e.classification === payload.classification ? (
+                      <Dot key={idx} cx={cx} cy={cy} r={5} fill={e.color} />
+                    ) : null
+                  )
+                )}
+              </g>
+            );
+          }}
+          connectNulls
+        />
+      </LineChart>
+
+      <InfoModal
+        title={title}
+        showModal={showModal}
+        clickedPoint={clickedPoint}
+        handleClose={handleCloseModal}
       />
-    </LineChart>
-    <LegendComponent/>
-    </>
+    </div>
   );
 };
 
