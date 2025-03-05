@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { DeteriorationGlobalContext } from "../../Context/Context";
 import Header from "../../Component/Header";
-import DeteriorationChart from "../../Component/Graphic";
+import DeteriorationChart from "../../Component/Graphic/Chart";
 import Title from "../../Component/Title/index";
 import LegendComponent from "../../Component/LegendComponent";
 import { desgastes } from "../../data/desgastes";

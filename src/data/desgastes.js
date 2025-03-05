@@ -70,7 +70,7 @@ const classificationColor = [
     color: "#ffff05",
   },
   {
-    classification: "P1F (30d)",
+    classification: "P1F (45d)",
     color: "#ff8f05",
   },
   {

@@ -5,9 +5,13 @@ import {
   FaPlay,
   FaStop,
   FaCalendarCheck,
-} from "react-icons/fa"; // Ícones de alerta, início e fim
+  FaTools,
+  FaWrench,
+  FaStickyNote,
+  FaCommentAlt,
+} from "react-icons/fa";
 import { DeteriorationGlobalContext } from "../../Context/Context";
-import DateFormat from "../DateFormat";
+import formatDate from "../../util/formatDate";
 import LoadingSpinner from "../LoadingSpinner/index";
 
 const InfoModal = ({ title, showModal, clickedPoint, handleClose }) => {
@@ -16,20 +20,20 @@ const InfoModal = ({ title, showModal, clickedPoint, handleClose }) => {
 
   useEffect(() => {
     if (showModal && clickedPoint) {
-      fetchData(); // Chama a API quando o modal é aberto
+      fetchData();
     }
   }, [showModal, clickedPoint]);
 
   const fetchData = async () => {
     try {
-      setLoading(true); // Define o loading como true
+      setLoading(true);
       await contexDeterioration.getInfoDeterioration(
         clickedPoint.deteriorationId
       );
-      setLoading(false); // Define o loading como false após a resposta da API
+      setLoading(false);
     } catch (error) {
       console.error("Erro ao obter os dados:", error);
-      setLoading(false); // Caso haja erro, para o loading
+      setLoading(false);
     }
   };
 
@@ -85,38 +89,47 @@ const InfoModal = ({ title, showModal, clickedPoint, handleClose }) => {
               </Alert>
               <Alert variant="light">
                 <p>
-                  <strong>Observações:</strong>{" "}
+                  <strong>Tipo de manutenção: </strong>
+                  {contexDeterioration.infoDeterioration.maintenanceType ===
+                  "preventivo" ? (
+                    <FaTools />
+                  ) : (
+                    <FaWrench />
+                  )}
+                  {` ${contexDeterioration.infoDeterioration.maintenanceType}`}
+                </p>
+
+                <p>
+                  <FaStickyNote /> <strong>Observações:</strong>{" "}
                   {contexDeterioration.infoDeterioration.observations ||
                     "Sem observações"}
                 </p>
                 <p>
-                  <strong>Comentários:</strong>{" "}
+                  <FaCommentAlt /> <strong>Comentários:</strong>{" "}
                   {contexDeterioration.infoDeterioration.comments ||
                     "Sem comentários"}
                 </p>
               </Alert>
               <Alert variant="light">
-                <div>
+                <div style={{ display: "flex" }}>
                   <FaPlay style={{ color: "green", marginRight: "10px" }} />
-                  <DateFormat
-                    message="Início da Manutenção:"
-                    date={clickedPoint.startedIn}
-                  />
+                  <p>Fim da manutenção: {formatDate(clickedPoint.startedIn)}</p>
                 </div>
 
-                <div>
+                <div style={{ display: "flex" }}>
                   <FaStop style={{ color: "red", marginRight: "10px" }} />
-                  <DateFormat
-                    message="Fim da Manutenção:"
-                    date={clickedPoint.finishedIn}
-                  />
+                  <p>
+                    Fim da manutenção: {formatDate(clickedPoint.finishedIn)}
+                  </p>
                 </div>
-                <div>
+                <div style={{ display: "flex" }}>
                   <FaCalendarCheck style={{ marginRight: "10px" }} />
-                  <DateFormat
-                    message="Inserido em:"
-                    date={contexDeterioration.infoDeterioration.createdAt}
-                  />
+                  <p>
+                    Inserido em:{" "}
+                    {formatDate(
+                      contexDeterioration.infoDeterioration.createdAt
+                    )}
+                  </p>
                 </div>
                 <p>
                   <strong>Valor do Desgaste:</strong> {clickedPoint.valor}
