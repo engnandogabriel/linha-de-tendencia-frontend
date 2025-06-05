@@ -113,7 +113,9 @@ const InfoModal = ({ title, showModal, clickedPoint, handleClose }) => {
               <Alert variant="light">
                 <div style={{ display: "flex" }}>
                   <FaPlay style={{ color: "green", marginRight: "10px" }} />
-                  <p>Fim da manutenção: {formatDate(clickedPoint.startedIn)}</p>
+                  <p>
+                    Início da manutenção: {formatDate(clickedPoint.startedIn)}
+                  </p>
                 </div>
 
                 <div style={{ display: "flex" }}>
@@ -122,6 +124,10 @@ const InfoModal = ({ title, showModal, clickedPoint, handleClose }) => {
                     Fim da manutenção: {formatDate(clickedPoint.finishedIn)}
                   </p>
                 </div>
+                <p>
+                  Valor coletado:{" "}
+                  {clickedPoint.y ? clickedPoint.y : "sem valor"}
+                </p>
                 <div style={{ display: "flex" }}>
                   <FaCalendarCheck style={{ marginRight: "10px" }} />
                   <p>
@@ -131,9 +137,6 @@ const InfoModal = ({ title, showModal, clickedPoint, handleClose }) => {
                     )}
                   </p>
                 </div>
-                <p>
-                  <strong>Valor do Desgaste:</strong> {clickedPoint.valor}
-                </p>
                 <p>
                   <strong>Classificação:</strong> {clickedPoint.classification}
                 </p>

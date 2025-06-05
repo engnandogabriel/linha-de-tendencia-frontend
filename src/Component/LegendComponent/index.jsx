@@ -19,10 +19,6 @@ const LegendComponent = () => {
       <span style={{ color: "#ff8f05" }}> P1F (Pré Restrição) </span>
       <span>--</span>
       <span style={{ color: "#ff0505" }}> P0 (Restrição) </span>
-      <span>--</span>
-      <span style={{ color: "#000000" }}> Ponto de Tendência </span>
-      <span>--</span>
-      <span style={{ color: "#000000" }}> Linha de Referência </span>
     </div>
   );
 };

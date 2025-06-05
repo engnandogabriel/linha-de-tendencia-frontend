@@ -10,6 +10,7 @@ import ModalError from "../../Component/ModalError";
 
 const Desgastes = () => {
   const [tu, setTu] = useState(null);
+  const [sede, setSede] = useState(null);
   const contexDeterioration = useContext(DeteriorationGlobalContext);
   const [load, setLoad] = useState(false);
   const [showModalErro, setShowModalErro] = useState(false);
@@ -33,7 +34,13 @@ const Desgastes = () => {
 
   return (
     <>
-      <Header tu={tu} setTu={setTu} fetchData={fetchData} />
+      <Header
+        tu={tu}
+        setTu={setTu}
+        sede={sede}
+        setSede={setSede}
+        fetchData={fetchData}
+      />
       {tu && <Title text={`Linha de Tendência ${tu}`} />}
       {showModalErro && (
         <ModalError

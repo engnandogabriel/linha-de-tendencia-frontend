@@ -23,7 +23,11 @@ const DeteriorationChart = ({
     ) {
       const clickedData =
         chartContext.w.config.series[seriesIndex].data[dataPointIndex];
-      setClickedPoint({ ...clickedData, startedIn: clickedData.x });
+      setClickedPoint({
+        ...clickedData,
+        startedIn: clickedData.x,
+        value: clickedData.y,
+      });
       setShowModal(true);
     }
   };
@@ -87,25 +91,16 @@ const DeteriorationChart = ({
         referenceLineMin && {
           y: referenceLineMin,
           borderColor: "red",
-          // label: {
-          //   text: "Mínimo",
-          //   style: { color: "#fff", background: "red" },
-          // },
         },
         referenceLineMax && {
           y: referenceLineMax,
           borderColor: "red",
-          // label: {
-          //   text: "Máximo",
-          //   style: { color: "#fff", background: "red" },
-          // },
         },
       ].filter(Boolean),
       xaxis: [
         {
           x: new Date(dataChart[dataChart.length - 4].finishedIn).getTime(),
           x2: new Date(dataChart[dataChart.length - 1].finishedIn).getTime(),
-          // fillColor: "#B3E5FC",
           fillColor: "red",
           opacity: 0.2,
           label: {
